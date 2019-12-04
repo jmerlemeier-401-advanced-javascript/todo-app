@@ -5,18 +5,24 @@ import Modal from "../modal";
 
 import "./todo.scss";
 
+import { SettingsContext } from '../settings/site-context';
+
 class ToDo extends React.Component {
+  static contextType = SettingsContext;
+
   constructor(props) {
     super(props);
     this.state = {
       todoList: [],
+      totalPages: 1,
       item: {},
       showDetails: false,
-      details: {}
+      details: {}, 
+      currentPageNumber: 1
     };
   }
 
-  handleInputChange = e => {
+  handleInputChange = (e) => {
     this.setState({ item: {...this.state.item, [e.target.name]: e.target.value} });
   };
 
@@ -34,7 +40,8 @@ class ToDo extends React.Component {
 
     this.setState({
       todoList: [...this.state.todoList, item],
-      item: {}
+      totalPages: Math.ceiling((this.state.todoList.length)/3),
+      item: {}, 
     });
 
   };
@@ -72,12 +79,14 @@ class ToDo extends React.Component {
   }
 
   render() {
-
+  let itemstoRender = [];
+  itemstoRender.push(this.state.todoList.slice(0,3));
+  console.log(itemstoRender);
     return (
       <>
         <header>
           <h2>
-            There are
+            There are 
             {this.state.todoList.filter( item => !item.complete ).length}
             Items To Complete
           </h2>
